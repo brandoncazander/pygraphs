@@ -22,6 +22,7 @@ class TestPygraphFunctions(unittest.TestCase):
         self.p = Pygraph()
         self.p.create_vertex("a", 100, 100)
         self.p.create_vertex("b", 150, 150)
+        self.p.create_vertex("c", 150, 50)
 
     def test_location(self):
         a = self.p.get_vertex("a")
@@ -31,9 +32,8 @@ class TestPygraphFunctions(unittest.TestCase):
 
     def test_connect(self):
         self.p.connect("a", "b")
-        self.assertEqual([("a", "b")], self.p.get_edges())
+        self.assertEqual([("a", "b"), ("b", "a")], self.p.get_edges())
 
-    @unittest.skip("temp")
     def test_collides_center(self):
         a = self.p.get_colliding_vertex(100, 100)
         b = self.p.get_colliding_vertex(50, 50)
@@ -51,7 +51,28 @@ class TestPygraphFunctions(unittest.TestCase):
     def test_reconnect(self):
         self.p.connect("a", "b")
         self.p.connect("a", "b")
-        self.assertEqual([("a", "b")], self.p.get_edges())
+        self.assertEqual([("a", "b"), ("b", "a")], self.p.get_edges())
+
+    def test_complete_graph_cycle(self):
+        self.p.connect("a", "b")
+        self.p.connect("a", "c")
+        complete_graph = [
+            ('a', ['b', 'c']),
+            ('c', ['a', 'b']),
+            ('b', ['a', 'c'])
+        ]
+        self.p.complete_graph()
+        self.assertEqual(complete_graph, self.p.graph.items())
+
+    def test_complete_graph_empty(self):
+        complete_graph = [
+            ('a', ['c', 'b']),
+            ('c', ['a', 'b']),
+            ('b', ['a', 'c'])
+        ]
+        self.p.complete_graph()
+        self.assertEqual(complete_graph, self.p.graph.items())
+
 
 if __name__ == "__main__":
     unittest.main()

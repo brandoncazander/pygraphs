@@ -80,6 +80,7 @@ class Pygraph(object):
     def connect(self, v1, v2):
         if v2 not in self.graph[v1] and v1 not in self.graph[v2]:
             self.graph[v1].append(v2)
+            self.graph[v2].append(v1)
             c1 = self.get_vertex(v1).get_center()
             c2 = self.get_vertex(v2).get_center()
             self.canvas.create_line(c1, c2, fill="red", tags="edge")
@@ -138,7 +139,12 @@ class Pygraph(object):
     Graph functions
     """
     def complete_graph(self):
-        pass
+        for vertex, _ in self.get_vertices():
+            for neighbour, _ in self.get_vertices():
+                if (neighbour is not vertex):
+                    self.connect(vertex, neighbour)
+        self.reorder()
+
 
 class Vertex:
 
@@ -157,9 +163,9 @@ class Vertex:
 
 if __name__ == "__main__":
     c = Pygraph()
-    c.create_vertex("a", 100, 100)
-    c.create_vertex("b", 150, 150)
-    c.create_vertex("c", 150, 50)
-    c.connect("a", "b")
-    c.connect("a", "c")
+    # c.create_vertex("a", 100, 100)
+    # c.create_vertex("b", 150, 150)
+    # c.create_vertex("c", 150, 50)
+    # c.connect("a", "b")
+    # c.connect("a", "c")
     c.run()
