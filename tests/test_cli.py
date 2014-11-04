@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 
-from pyskel.scripts import cli
+from pygraphs.scripts import cli
 
 
 def test_cli_count():
